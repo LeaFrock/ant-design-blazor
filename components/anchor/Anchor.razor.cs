@@ -32,7 +32,7 @@ namespace AntDesign
         private AnchorLink _lastActiveLink;
         private Dictionary<string, decimal> _linkTops;
         private List<AnchorLink> _flatLinks;
-        private List<AnchorLink> _links = new List<AnchorLink>();
+        private List<AnchorLink> _links = [];
         private bool _linksChanged = false;
 
         [Inject]
@@ -137,9 +137,9 @@ namespace AntDesign
         {
             base.OnInitialized();
 
-            string prefixCls = "ant-anchor";
-            ClassMapper.Add(prefixCls)
-                .If($"{prefixCls}-rtl", () => RTL);
+            const string PrefixCls = "ant-anchor";
+            ClassMapper.Add(PrefixCls)
+                .If($"{PrefixCls}-rtl", () => RTL);
         }
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -159,7 +159,7 @@ namespace AntDesign
                 _linksChanged = false;
 
                 _selfDom = await JsInvokeAsync<DomRect>(JSInteropConstants.GetBoundingClientRect, _ink);
-                _linkTops = new Dictionary<string, decimal>();
+                _linkTops = [];
                 _flatLinks = FlatChildren();
                 foreach (var link in _flatLinks)
                 {
@@ -168,7 +168,7 @@ namespace AntDesign
 
                 if (GetCurrentAnchor != null)
                 {
-                    AnchorLink link = _flatLinks.SingleOrDefault(l => l.Href == GetCurrentAnchor());
+                    var link = _flatLinks.Find(l => l.Href == GetCurrentAnchor());
                     if (link != null)
                     {
                         try
@@ -183,7 +183,7 @@ namespace AntDesign
                                 StateHasChanged();
                             }
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                         }
                     }
@@ -193,7 +193,7 @@ namespace AntDesign
 
         internal void Clear()
         {
-            foreach (IAnchor link in _links)
+            foreach (var link in _links)
             {
                 link.Clear();
             }
@@ -202,9 +202,9 @@ namespace AntDesign
 
         internal List<AnchorLink> FlatChildren()
         {
-            List<AnchorLink> results = new List<AnchorLink>();
+            List<AnchorLink> results = [];
 
-            foreach (IAnchor child in _links)
+            foreach (var child in _links)
             {
                 results.AddRange(child.FlatChildren());
             }
@@ -220,7 +220,7 @@ namespace AntDesign
                 _activeLink = null;
                 _flatLinks.ForEach(l => l.Activate(false));
 
-                int offset = OffsetBottom.HasValue ? OffsetBottom.Value : -OffsetTop.Value;
+                var offset = OffsetBottom ?? -OffsetTop.Value;
                 foreach (var link in _flatLinks)
                 {
                     try
@@ -231,16 +231,16 @@ namespace AntDesign
                             _linkTops[link.Href] = hrefDom.Top + offset;
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         _linkTops[link.Href] = 1;
                     }
                 }
 
-                string activeKey = _linkTops.Where(p => (int)p.Value <= 0).OrderBy(p => p.Value).LastOrDefault().Key;
+                var activeKey = _linkTops.Where(p => (int)p.Value <= 0).OrderBy(p => p.Value).LastOrDefault().Key;
                 if (!string.IsNullOrEmpty(activeKey))
                 {
-                    _activeLink = _flatLinks.FirstOrDefault(l => l.Href == activeKey);
+                    _activeLink = _flatLinks.Find(l => l.Href == activeKey);
                     await ActivateAsync(_activeLink, true);
                 }
 

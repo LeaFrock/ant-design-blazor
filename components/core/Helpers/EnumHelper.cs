@@ -49,11 +49,11 @@ namespace AntDesign
         {
             if (enumValue == null)
             {
-                return Array.Empty<T>();
+                return [];
             }
             if (enumValue is string enumString)
             {
-                return _valueList.Where(value => enumString.Split(",").Contains(Enum.GetName(_enumType, value)));
+                return _valueList.Where(value => enumString.Split(',').Contains(Enum.GetName(_enumType, value)));
             }
             return _valueList.Where(value => _hasFlagFunction((T)enumValue, value));
         }

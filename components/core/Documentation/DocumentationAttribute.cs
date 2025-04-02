@@ -7,21 +7,14 @@ using System;
 namespace AntDesign
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    internal class DocumentationAttribute : Attribute
+    internal class DocumentationAttribute(DocumentationCategory category, DocumentationType type, string coverImageUrl) : Attribute
     {
-        public DocumentationAttribute(DocumentationCategory category, DocumentationType type, string coverImageUrl)
-        {
-            Category = category;
-            Type = type;
-            CoverImageUrl = coverImageUrl;
-        }
-
-        public DocumentationCategory Category { get; }
+        public DocumentationCategory Category { get; } = category;
         public int Columns { get; set; } = 2;
-        public string CoverImageUrl { get; }
+        public string CoverImageUrl { get; } = coverImageUrl;
         public bool OutputApi { get; set; } = true;
         public string? SubTitle { get; set; } = null;
         public string Title { get; set; } = null;
-        public DocumentationType Type { get; }
+        public DocumentationType Type { get; } = type;
     }
 }

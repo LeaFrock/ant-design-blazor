@@ -583,26 +583,18 @@ namespace AntDesign.Core.Helpers.MemberPath
 
         #endregion
 
-        private readonly struct PathGetConfig
+        private readonly struct PathGetConfig(string path, Type itemType, Type paramType, Type valueType, bool checkNull)
+            : IEquatable<PathGetConfig>
         {
-            public readonly string Path;
+            public readonly string Path = path;
 
-            public readonly Type ItemType;
+            public readonly Type ItemType = itemType;
 
-            public readonly Type ParamType;
+            public readonly Type ParamType = paramType;
 
-            public readonly Type ValueType;
+            public readonly Type ValueType = valueType;
 
-            public readonly bool CheckNull;
-
-            public PathGetConfig(string path, Type itemType, Type paramType, Type valueType, bool checkNull)
-            {
-                Path = path;
-                ItemType = itemType;
-                ParamType = paramType;
-                ValueType = valueType;
-                CheckNull = checkNull;
-            }
+            public readonly bool CheckNull = checkNull;
 
             public bool Equals(PathGetConfig other)
             {
@@ -613,7 +605,7 @@ namespace AntDesign.Core.Helpers.MemberPath
                     && CheckNull == other.CheckNull;
             }
 
-            public override bool Equals(object? obj)
+            public override bool Equals(object obj)
             {
                 return obj is PathGetConfig other && Equals(other);
             }
@@ -634,23 +626,16 @@ namespace AntDesign.Core.Helpers.MemberPath
             }
         }
 
-        private readonly struct PathSetConfig
+        private readonly struct PathSetConfig(string path, Type itemType, Type paramType, Type valueType)
+            : IEquatable<PathSetConfig>
         {
-            public readonly string Path;
+            public readonly string Path = path;
 
-            public readonly Type ItemType;
+            public readonly Type ItemType = itemType;
 
-            public readonly Type ParamType;
+            public readonly Type ParamType = paramType;
 
-            public readonly Type ValueType;
-
-            public PathSetConfig(string path, Type itemType, Type paramType, Type valueType)
-            {
-                Path = path;
-                ItemType = itemType;
-                ParamType = paramType;
-                ValueType = valueType;
-            }
+            public readonly Type ValueType = valueType;
 
             public bool Equals(PathSetConfig other)
             {
@@ -660,7 +645,7 @@ namespace AntDesign.Core.Helpers.MemberPath
                     && ValueType == other.ValueType;
             }
 
-            public override bool Equals(object? obj)
+            public override bool Equals(object obj)
             {
                 return obj is PathSetConfig other && Equals(other);
             }
@@ -681,7 +666,7 @@ namespace AntDesign.Core.Helpers.MemberPath
             }
         }
 
-        private class PathConfigEqualityComparer : IEqualityComparer<PathGetConfig>, IEqualityComparer<PathSetConfig>
+        private sealed class PathConfigEqualityComparer : IEqualityComparer<PathGetConfig>, IEqualityComparer<PathSetConfig>
         {
             public bool Equals(PathGetConfig x, PathGetConfig y) => x.Equals(y);
 
@@ -692,17 +677,11 @@ namespace AntDesign.Core.Helpers.MemberPath
             public int GetHashCode(PathSetConfig obj) => obj.GetHashCode();
         }
 
-        public readonly struct PathGetExpression
+        public readonly struct PathGetExpression(Expression body, ParameterExpression itemParameter)
         {
-            public readonly Expression Body;
+            public readonly Expression Body = body;
 
-            public readonly ParameterExpression ItemParameter;
-
-            public PathGetExpression(Expression body, ParameterExpression itemParameter)
-            {
-                Body = body;
-                ItemParameter = itemParameter;
-            }
+            public readonly ParameterExpression ItemParameter = itemParameter;
 
             public void Deconstruct(out Expression body, out ParameterExpression itemParameter)
             {
@@ -711,20 +690,13 @@ namespace AntDesign.Core.Helpers.MemberPath
             }
         }
 
-        public readonly struct PathSetExpression
+        public readonly struct PathSetExpression(Expression body, ParameterExpression itemParameter, ParameterExpression valueParameter)
         {
-            public readonly Expression Body;
+            public readonly Expression Body = body;
 
-            public readonly ParameterExpression ItemParameter;
+            public readonly ParameterExpression ItemParameter = itemParameter;
 
-            public readonly ParameterExpression ValueParameter;
-
-            public PathSetExpression(Expression body, ParameterExpression itemParameter, ParameterExpression valueParameter)
-            {
-                Body = body;
-                ItemParameter = itemParameter;
-                ValueParameter = valueParameter;
-            }
+            public readonly ParameterExpression ValueParameter = valueParameter;
 
             public void Deconstruct(out Expression body, out ParameterExpression itemParameter, out ParameterExpression valueParameter)
             {

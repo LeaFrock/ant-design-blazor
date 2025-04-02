@@ -2,10 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-namespace AntDesign
+namespace AntDesign;
+
+public interface IComponentIdGenerator
 {
-    public interface IComponentIdGenerator
-    {
-        string Generate(AntDomComponentBase component);
-    }
+    public string Generate(AntDomComponentBase component);
 }

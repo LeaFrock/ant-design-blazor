@@ -4,39 +4,32 @@
 
 using System;
 
-namespace AntDesign.Core.Helpers.MemberPath
+namespace AntDesign.Core.Helpers.MemberPath;
+
+public class PathNode(string name, PathNodeType nodeType)
 {
-    public class PathNode
+    public readonly string Name = name;
+
+    public readonly PathNodeType NodeType = nodeType;
+
+    public static PathNode NewMember(string memberName)
     {
-        public readonly string Name;
+        return new(memberName, PathNodeType.Member);
+    }
 
-        public readonly PathNodeType NodeType;
+    public static PathNode NewIndex(string indexKey, bool isStringKey)
+    {
+        return new(indexKey, isStringKey ? PathNodeType.StringIndex : PathNodeType.NumberIndex);
+    }
 
-        public PathNode(string name, PathNodeType nodeType)
+    public override string ToString()
+    {
+        return NodeType switch
         {
-            Name = name;
-            NodeType = nodeType;
-        }
-
-        public static PathNode NewMember(string memberName)
-        {
-            return new(memberName, PathNodeType.Member);
-        }
-
-        public static PathNode NewIndex(string indexKey, bool isStringKey)
-        {
-            return new(indexKey, isStringKey ? PathNodeType.StringIndex : PathNodeType.NumberIndex);
-        }
-
-        public override string ToString()
-        {
-            return NodeType switch
-            {
-                PathNodeType.Member => Name,
-                PathNodeType.StringIndex => $"['{Name.Replace("'", "''")}']",
-                PathNodeType.NumberIndex => $"[{Name}]",
-                _ => throw new ArgumentOutOfRangeException()
-            };
-        }
+            PathNodeType.Member => Name,
+            PathNodeType.StringIndex => $"['{Name.Replace("'", "''")}']",
+            PathNodeType.NumberIndex => $"[{Name}]",
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 }

@@ -14,22 +14,14 @@ using Microsoft.Extensions.Logging;
 
 namespace AntDesign
 {
-    public class HtmlRenderer : Renderer
+    public class HtmlRenderer(IServiceProvider serviceProvider, ILoggerFactory loggerFactory, Func<string, string> htmlEncoder) : Renderer(serviceProvider, loggerFactory)
     {
-        private static readonly HashSet<string> _selfClosingElements = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        private static readonly HashSet<string> _selfClosingElements = new(StringComparer.OrdinalIgnoreCase)
         {
             "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "param", "source", "track", "wbr"
         };
 
         private static readonly Task _canceledRenderTask = Task.FromCanceled(new CancellationToken(canceled: true));
-
-        private readonly Func<string, string> _htmlEncoder;
-
-        public HtmlRenderer(IServiceProvider serviceProvider, ILoggerFactory loggerFactory, Func<string, string> htmlEncoder)
-            : base(serviceProvider, loggerFactory)
-        {
-            _htmlEncoder = htmlEncoder;
-        }
 
         public override Dispatcher Dispatcher { get; } = Dispatcher.CreateDefault();
 
@@ -111,7 +103,7 @@ namespace AntDesign
                 case RenderTreeFrameType.Attribute:
                     throw new InvalidOperationException($"Attributes should only be encountered within {nameof(RenderElement)}");
                 case RenderTreeFrameType.Text:
-                    context.Result.Add(_htmlEncoder(frame.TextContent));
+                    context.Result.Add(htmlEncoder(frame.TextContent));
                     return ++position;
 
                 case RenderTreeFrameType.Markup:
@@ -219,7 +211,7 @@ namespace AntDesign
             return RenderFrames(context, frames, position, maxElements);
         }
 
-        private int RenderAttributes(
+        private static int RenderAttributes(
             HtmlRenderingContext context,
             ArrayRange<RenderTreeFrame> frames, int position, int maxElements, out string capturedValueAttribute)
         {
@@ -258,7 +250,7 @@ namespace AntDesign
                         result.Add(frame.AttributeName);
                         result.Add("=");
                         result.Add("\"");
-                        result.Add(_htmlEncoder(value));
+                        result.Add(htmlEncoder(value));
                         result.Add("\"");
                         break;
 
@@ -291,7 +283,7 @@ namespace AntDesign
 
         private class HtmlRenderingContext
         {
-            public List<string> Result { get; } = new List<string>();
+            public List<string> Result { get; } = [];
 
             public string ClosestSelectValueAsString { get; set; }
         }

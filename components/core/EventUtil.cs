@@ -36,53 +36,24 @@ namespace AntDesign
             public Task HandleEventAsync(EventCallbackWorkItem item, object arg) => item.InvokeAsync(arg);
         }
 
-        private sealed class SyncReceiver : ReceiverBase
+        private sealed class SyncReceiver(Action callback) : ReceiverBase
         {
-            private Action callback;
-
-            public SyncReceiver(Action callback)
-            {
-                this.callback = callback;
-            }
-
             public void Invoke() => callback();
         }
 
-        private sealed class SyncReceiver<T> : ReceiverBase
+        private sealed class SyncReceiver<T>(Action<T> callback) : ReceiverBase
         {
-            private Action<T> callback;
-
-            public SyncReceiver(Action<T> callback)
-            {
-                this.callback = callback;
-            }
-
             public void Invoke(T arg) => callback(arg);
         }
 
-        private sealed class AsyncReceiver : ReceiverBase
+        private sealed class AsyncReceiver(Func<Task> callback) : ReceiverBase
         {
-            private Func<Task> callback;
-
-            public AsyncReceiver(Func<Task> callback)
-            {
-                this.callback = callback;
-            }
-
             public Task Invoke() => callback();
         }
 
-        private sealed class AsyncReceiver<T> : ReceiverBase
+        private sealed class AsyncReceiver<T>(Func<T, Task> callback) : ReceiverBase
         {
-            private Func<T, Task> callback;
-
-            public AsyncReceiver(Func<T, Task> callback)
-            {
-                this.callback = callback;
-            }
-
             public Task Invoke(T arg) => callback(arg);
         }
     }
-
 }

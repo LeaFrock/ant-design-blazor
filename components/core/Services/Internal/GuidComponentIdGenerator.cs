@@ -4,10 +4,9 @@
 
 using System;
 
-namespace AntDesign
+namespace AntDesign;
+
+internal class GuidComponentIdGenerator : IComponentIdGenerator
 {
-    internal class GuidComponentIdGenerator : IComponentIdGenerator
-    {
-        public string Generate(AntDomComponentBase component) => "ant-blazor-" + Guid.NewGuid();
-    }
+    public string Generate(AntDomComponentBase component) => "ant-blazor-" + Guid.NewGuid().ToString();
 }

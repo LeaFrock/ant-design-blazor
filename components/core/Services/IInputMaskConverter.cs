@@ -6,5 +6,5 @@ namespace AntDesign.Core;
 
 public interface IInputMaskConverter
 {
-    string Convert(string value, string mask);
+    public string Convert(string value, string mask);
 }

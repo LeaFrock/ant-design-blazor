@@ -4,15 +4,15 @@
 
 using System.Collections.Generic;
 
-namespace AntDesign
+namespace AntDesign;
+
+internal interface IAnchor
 {
-    internal interface IAnchor
-    {
-        void Add(AnchorLink anchorLink);
-        void Remove(AnchorLink anchorLink);
+    public void Add(AnchorLink anchorLink);
 
-        void Clear();
+    public void Remove(AnchorLink anchorLink);
 
-        List<AnchorLink> FlatChildren();
-    }
+    public void Clear();
+
+    public List<AnchorLink> FlatChildren();
 }

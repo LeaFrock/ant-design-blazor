@@ -66,13 +66,13 @@ namespace AntDesign
 
         public static int GetQuarter(DateTime date)
         {
-            int offset = date.Month % QUARTER_MONTH_COUNT > 0 ? 1 : 0;
+            var offset = date.Month % QUARTER_MONTH_COUNT > 0 ? 1 : 0;
             return date.Month / QUARTER_MONTH_COUNT + offset;
         }
 
         public static DateTime GetStartDateOfQuarter(DateTime date)
         {
-            int quarter = GetQuarter(date);
+            var quarter = GetQuarter(date);
             return new DateTime(date.Year, 1 + ((quarter - 1) * QUARTER_MONTH_COUNT), 1);
         }
 
@@ -96,7 +96,7 @@ namespace AntDesign
         /// <returns></returns>
         public static DateTime GetNextStartDateOfDecade(DateTime date)
         {
-            int year = date.Year / DECADE_YEAR_COUNT * DECADE_YEAR_COUNT;
+            var year = date.Year / DECADE_YEAR_COUNT * DECADE_YEAR_COUNT;
 
             if (year < DateTime.MinValue.Year)
             {
@@ -203,7 +203,7 @@ namespace AntDesign
         /// <returns></returns>
         public static DateTime AddYearsSafely(DateTime currentDate, int value)
         {
-            int newYear = currentDate.Year + value;
+            var newYear = currentDate.Year + value;
 
             if (newYear < DateTime.MinValue.Year)
             {
@@ -226,7 +226,7 @@ namespace AntDesign
         /// <returns></returns>
         public static DateTime AddMonthsSafely(DateTime currentDate, int value)
         {
-            int newMonth = currentDate.Month + value;
+            var newMonth = currentDate.Month + value;
 
             /* at min date value */
             if (currentDate.Year == DateTime.MinValue.Year && newMonth < DateTime.MinValue.Month)
@@ -252,7 +252,7 @@ namespace AntDesign
         /// <returns></returns>
         public static DateTime AddDaysSafely(DateTime currentDate, int value)
         {
-            int newDay = currentDate.Day + value;
+            var newDay = currentDate.Day + value;
 
             /* at min date value */
             if (currentDate.Year == DateTime.MinValue.Year

@@ -7,17 +7,12 @@ using System;
 namespace AntDesign.Core.Documentation
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-    internal class PublicApiAttribute : Attribute
+    internal class PublicApiAttribute(string releaseVersion) : Attribute
     {
-        public string ReleaseVersion { get; set; }
+        public string ReleaseVersion { get; set; } = releaseVersion;
 
         public string DeprecationVersion { get; set; }
 
         public bool Deprecated { get; set; }
-
-        public PublicApiAttribute(string releaseVersion)
-        {
-            ReleaseVersion = releaseVersion;
-        }
     }
 }

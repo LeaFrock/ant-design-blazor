@@ -7,31 +7,17 @@ using Microsoft.AspNetCore.Components;
 
 namespace AntDesign
 {
-    public class HtmlRenderService
+    public class HtmlRenderService(HtmlRenderer htmlRenderer)
     {
-        private readonly HtmlRenderer _htmlRenderer;
-
-        public HtmlRenderService(HtmlRenderer htmlRenderer)
-        {
-            _htmlRenderer = htmlRenderer;
-        }
-
         public async ValueTask<string> RenderAsync(RenderFragment renderFragment)
         {
-            var text = await _htmlRenderer.Dispatcher.InvokeAsync(() => _htmlRenderer.RenderComponentAsync(new EmptyComponent(renderFragment), ParameterView.Empty));
+            var text = await htmlRenderer.Dispatcher.InvokeAsync(() => htmlRenderer.RenderComponentAsync(new EmptyComponent(renderFragment), ParameterView.Empty));
             return string.Join("", text.Tokens);
         }
 
-        private class EmptyComponent : IComponent
+        private class EmptyComponent(RenderFragment content) : IComponent
         {
             private RenderHandle _renderHandle;
-
-            private readonly RenderFragment _content;
-
-            public EmptyComponent(RenderFragment content)
-            {
-                this._content = content;
-            }
 
             public void Attach(RenderHandle renderHandle)
             {
@@ -40,7 +26,7 @@ namespace AntDesign
 
             public Task SetParametersAsync(ParameterView parameters)
             {
-                _renderHandle.Render(_content);
+                _renderHandle.Render(content);
                 return Task.CompletedTask;
             }
         }

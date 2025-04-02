@@ -20,11 +20,14 @@ namespace AntDesign
     public partial class AnchorLink : AntDomComponentBase, IAnchor
     {
         private const string PrefixCls = "ant-anchor-link";
+
+        private readonly ClassMapper _titleClass = new();
+        private readonly List<AnchorLink> _links = [];
+
         internal bool Active { get; private set; }
 
         private bool _hrefDomExist;
-        private ClassMapper _titleClass = new ClassMapper();
-        private List<AnchorLink> _links = new List<AnchorLink>();
+
         internal DomRect LinkDom { get; private set; }
 
         #region Parameters
@@ -123,7 +126,7 @@ namespace AntDesign
 
         internal void Clear()
         {
-            foreach (IAnchor link in _links)
+            foreach (var link in _links)
             {
                 link.Clear();
             }
@@ -133,7 +136,7 @@ namespace AntDesign
 
         internal List<AnchorLink> FlatChildren()
         {
-            List<AnchorLink> results = new List<AnchorLink>();
+            List<AnchorLink> results = [];
 
             if (!string.IsNullOrEmpty(Href))
             {
@@ -141,7 +144,7 @@ namespace AntDesign
                 results.Add(this);
             }
 
-            foreach (IAnchor child in _links)
+            foreach (var child in _links)
             {
                 results.AddRange(child.FlatChildren());
             }
@@ -176,7 +179,7 @@ namespace AntDesign
 
         void IAnchor.Remove(AnchorLink anchorLink)
         {
-           Remove(anchorLink);
+            Remove(anchorLink);
         }
 
         void IAnchor.Clear()
