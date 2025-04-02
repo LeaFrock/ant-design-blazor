@@ -35,18 +35,11 @@ namespace AntDesign.JsInterop
         }
     }
 
-    public class DomEventSubscription
+    public class DomEventSubscription(Delegate @delegate, Type type, string id)
     {
-        internal Delegate Delegate { get; set; }
-        internal Type Type { get; set; }
-        internal string Id { get; set; }
-
-        public DomEventSubscription(Delegate @delegate, Type type, string id)
-        {
-            Delegate = @delegate;
-            Type = type;
-            Id = id;
-        }
+        internal Delegate Delegate { get; set; } = @delegate;
+        internal Type Type { get; set; } = type;
+        internal string Id { get; set; } = id;
     }
 
     public record DomEventKey(string Selector, string EventName, string ListenerId)
