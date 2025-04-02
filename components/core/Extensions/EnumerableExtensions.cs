@@ -13,37 +13,35 @@ namespace AntDesign
     {
         public static void ForEach<T>(this IEnumerable<T> items, Action<T> action)
         {
-            if (items == null)
+            if (items is null)
             {
                 return;
             }
 
-            var source = items.ToList();
-
-            foreach (T obj in source)
+            foreach (var item in items)
             {
-                action(obj);
+                action.Invoke(item);
             }
         }
 
         public static void ForEach<T>(this IEnumerable<T> items, Action<T, int> action)
         {
-            if (items == null)
+            if (items is null)
             {
                 return;
             }
 
-            var source = items.ToArray();
-
-            for (int i = 0; i < source.Length; i++)
+            var index = 0;
+            foreach (var item in items)
             {
-                action(source[i], i);
+                action.Invoke(item, index);
+                index++;
             }
         }
 
         public static async Task ForEachAsync<T>(this IEnumerable<T> items, Func<T, Task> func)
         {
-            if (items == null)
+            if (items is null)
             {
                 return;
             }
@@ -53,7 +51,7 @@ namespace AntDesign
 
         public static bool IsIn<T>(this T source, params T[] array)
         {
-            if (array == null)
+            if (array is null)
             {
                 return false;
             }
@@ -61,21 +59,42 @@ namespace AntDesign
             return array.Contains(source);
         }
 
-        public static bool IsIn<T>(this T source, IEnumerable<T> array)
+        public static bool IsIn<T>(this T source, params ReadOnlySpan<T> span)
         {
-            if (array == null)
+            if (span.IsEmpty)
             {
                 return false;
             }
 
-            return array.Contains(source);
+            if (source is IEquatable<T> eq)
+            {
+                for (var i = 0; i < span.Length; i++)
+                {
+                    if (eq.Equals(span[i]))
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                var comparer = EqualityComparer<T>.Default;
+                for (var i = 0; i < span.Length; i++)
+                {
+                    if (comparer.Equals(source, span[i]))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         public static T[] Append<T>(this T[] array, T item)
         {
             if (array == null)
             {
-                return new[] { item };
+                return [item];
             }
             Array.Resize(ref array, array.Length + 1);
             array[^1] = item;
@@ -85,17 +104,16 @@ namespace AntDesign
 
         public static T[] Remove<T>(this T[] array, T item)
         {
-            if (array == null)
+            if (array is not { Length: > 0 })
             {
-                return Array.Empty<T>();
+                return [];
             }
 
-            if (item == null)
+            if (item is null)
             {
-                return array.Where(x => x != null).ToArray();
+                return Array.FindAll(array, x => x is not null);
             }
-
-            return array.Where(x => !item.Equals(x)).ToArray();
+            return Array.FindAll(array, x => !item.Equals(x));
         }
 
         /// <summary>
@@ -108,12 +126,11 @@ namespace AntDesign
         /// <returns></returns>
         public static IList<T> AddIf<T>(this IList<T> items, bool condition, T item)
         {
-            items ??= new List<T>();
+            items ??= [];
             if (condition)
             {
                 items.Add(item);
             }
-
             return items;
         }
     }
