@@ -14,7 +14,7 @@ namespace AntDesign
 {
     public partial class GenerateColumns<TItem> : ComponentBase
     {
-        private PropertyInfo[] _propertyInfos = { };
+        private PropertyInfo[] _propertyInfos = [];
 
         /// <summary>
         /// Specific the range of the columns that need to display.
@@ -26,13 +26,11 @@ namespace AntDesign
         /// Hide the columns by the property name.
         /// </summary>
         [Parameter]
-        public IEnumerable<string> HideColumnsByName { get; set; } = new List<string>();
+        public IEnumerable<string> HideColumnsByName { get; set; } = [];
 
         /// <summary>
         /// An Action to defined each column
         /// </summary>
-        /// <param name="propertyName">The name of the property binding the column. </param>
-        /// <param name="column">The column instance, you need to explicitly cast to a concrete Column type. </param>
         [Parameter]
         public Action<string, IFieldColumn> Definitions { get; set; }
 

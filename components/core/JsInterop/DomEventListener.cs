@@ -205,9 +205,9 @@ public class DomEventListener(IJSRuntime jsRuntime, DomEventSubscriptionStore do
         {
             await jsRuntime.InvokeVoidAsync(JSInteropConstants.ObserverConstants.Resize.Disconnect, key.ToString());
         }
-        if (domEventSubscriptionStore.ContainsKey(key))
+        if (domEventSubscriptionStore.TryGetValue(key, out var value))
         {
-            domEventSubscriptionStore[key].Clear();
+            value.Clear();
         }
     }
 
